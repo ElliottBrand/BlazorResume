@@ -1,0 +1,99 @@
+﻿@page "/app-admin/jobs/{JobId:int}"
+@layout Shared.AdminLayout
+
+@implements IDisposable
+@inject AlertState AlertState
+@inject HttpClient http
+@attribute [Authorize(Roles = "administrator")]
+
+<Title Value="Administration | Job"></Title>
+
+@if (_job == null)
+{
+    <div class="text-center">
+        <span class="oi oi-cog spin-icon"></span> Loading...
+    </div>
+}
+else
+{
+    <section class="container mb-4">
+        <header>
+            <h2>Job</h2>
+        </header>
+        <EditForm Model="_job" OnValidSubmit="HandleValidSubmit">
+            <DataAnnotationsValidator />
+
+            <div class="input-group mt-2">
+                <div class="input-group-prepend">
+                    <label class="input-group-text">Job Title</label>
+                </div>
+                <InputText id="FullName" @bind-Value="_job.JobTitle" class="form-control" />
+            </div>
+            <ValidationMessage For="@(() => _job.JobTitle)" />
+
+            <div class="input-group mt-2">
+                <div class="input-group-prepend">
+                    <label class="input-group-text">Company</label>
+                </div>
+                <InputText id="Title" @bind-Value="_job.CompanyName" class="form-control" />
+            </div>
+            <ValidationMessage For="@(() => _job.CompanyName)" />
+
+            <div class="mt-2">
+                <InputTextArea id="Overview" @bind-Value="_job.Details" class="form-control" rows="5" />
+            </div>
+            <ValidationMessage For="@(() => _job.Details)" />
+
+            <div class="input-group mt-2">
+                <div class="input-group-prepend">
+                    <label class="input-group-text">Start Date</label>
+                </div>
+                <InputDate @bind-Value="_job.StartDate" class="form-control"></InputDate>
+            </div>
+
+            <div class="input-group mt-2">
+                <div class="input-group-prepend">
+                    <label class="input-group-text">End Date</label>
+                </div>
+                <InputDate @bind-Value="_job.EndDate" class="form-control"></InputDate>
+            </div>
+
+            <SubmitButton Status="@_submitButtonModel.Status"></SubmitButton>
+        </EditForm>
+        <Alert Message="@_alertModel.Message" Status="@_alertModel.Status" ResultClass="@AlertState.ResultClass" ResultSpan="@AlertState.ResultSpan" ShowOnSuccess="false"></Alert>
+    </section>
+
+}
+
+@code {
+    public JobModel _job = new JobModel();
+    [Parameter] public int JobId { get; set; }
+    private AlertModel _alertModel = new AlertModel();
+    private SubmitButtonModel _submitButtonModel = new SubmitButtonModel();
+
+    protected override async Task OnInitializedAsync()
+    {
+        AlertState.RenderAlert += StateHasChanged;
+
+        _job = await http.GetFromJsonAsync<JobModel>("api/jobs/" + JobId);
+    }
+
+    public void Dispose()
+    {
+        AlertState.RenderAlert -= StateHasChanged;
+    }
+
+    private async void HandleValidSubmit()
+    {
+        _submitButtonModel.Status = "Processing";
+        StateHasChanged();
+
+        var response = await http.PostAsJsonAsync<JobModel>("api/jobs/update/" + JobId, _job);
+
+        _alertModel = await AlertHelpers.BuildMessageAsync(response);
+
+        AlertState.RenderAlertStyles(_alertModel.Status);
+        _submitButtonModel.Status = _alertModel.Status;
+        StateHasChanged();
+    }
+}

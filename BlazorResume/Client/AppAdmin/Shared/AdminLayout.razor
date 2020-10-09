@@ -1,0 +1,22 @@
+﻿@inherits LayoutComponentBase
+
+<Link href="css/app-admin.css" rel="stylesheet" />
+
+<div class="main admin-main">
+    <div class="login-container container">
+        <div class="row">
+            <div class="col-12 col-md-6 pr-2">
+                <a href="/" class="btn btn-secondary m-1"><span class="oi oi-home"></span> Home</a>
+            </div>
+            <div class="col-12 col-md-6 text-right">
+                <LoginDisplay />
+            </div>
+        </div>
+    </div>
+    <div class="top-row px-4 auth">
+        <AdminNavMenu />
+    </div>
+    <div class="content">
+        @Body
+    </div>
+</div>

@@ -1,0 +1,28 @@
+﻿@if (ShowOnSuccess == false && Status == "Success")
+{
+    @* Don't show anything *@
+}
+else
+{
+<div class="mt-2 @ResultClass">
+    <span class="@ResultSpan">@Message</span>
+</div>
+}
+
+@code {
+    /// <summary>
+    /// The message that should be displayed in the alert.
+    /// </summary>
+    [Parameter] public string Message { get; set; }
+
+    /// <summary>
+    /// The status will either be "Success", "Warning", or "Error".
+    /// </summary>
+    [Parameter] public string Status { get; set; }
+
+    [Parameter] public string ResultClass { get; set; }
+
+    [Parameter] public string ResultSpan { get; set; }
+
+    [Parameter] public bool ShowOnSuccess { get; set; } = true;
+}

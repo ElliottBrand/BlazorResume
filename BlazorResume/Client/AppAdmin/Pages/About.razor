@@ -1,0 +1,75 @@
+﻿@page "/app-admin/about"
+@layout Shared.AdminLayout
+
+@implements IDisposable
+@inject AlertState AlertState
+@inject HttpClient http
+@attribute [Authorize(Roles = "administrator")]
+
+<Title Value="Administration | About"></Title>
+
+@if (_about == null)
+{
+    <div class="text-center">
+        <span class="oi oi-cog spin-icon"></span> Loading...
+    </div>
+}
+else
+{
+    <section class="container mb-4">
+        <header>
+            <h2>About</h2>
+        </header>
+        <EditForm Model="_about" OnValidSubmit="HandleValidSubmit">
+            <DataAnnotationsValidator />
+
+            <div class="input-group mt-2">
+                <div class="input-group-prepend">
+                    <label class="input-group-text">Title</label>
+                </div>
+                <InputText id="FullName" @bind-Value="_about.Title" class="form-control" />
+            </div>
+            <ValidationMessage For="@(() => _about.Title)" />
+
+            <div class="mt-2">
+                <InputTextArea id="Overview" @bind-Value="_about.Details" rows="5" class="form-control" />
+            </div>
+            <ValidationMessage For="@(() => _about.Details)" />
+
+            <SubmitButton Status="@_submitButtonModel.Status"></SubmitButton>
+        </EditForm>
+        <Alert Message="@_alertModel.Message" Status="@_alertModel.Status" ResultClass="@AlertState.ResultClass" ResultSpan="@AlertState.ResultSpan" ShowOnSuccess="false"></Alert>
+    </section>
+}
+
+@code {
+    private AboutModel _about = new AboutModel();
+    private AlertModel _alertModel = new AlertModel();
+    private SubmitButtonModel _submitButtonModel = new SubmitButtonModel();
+
+    protected override async Task OnInitializedAsync()
+    {
+        _about = await http.GetFromJsonAsync<AboutModel>("api/about");
+
+        AlertState.RenderAlert += StateHasChanged;
+    }
+
+    public void Dispose()
+    {
+        AlertState.RenderAlert -= StateHasChanged;
+    }
+
+    public async void HandleValidSubmit()
+    {
+        _submitButtonModel.Status = "Processing";
+        StateHasChanged();
+
+        var response = await http.PostAsJsonAsync<AboutModel>("api/about", _about);
+
+        _alertModel = await AlertHelpers.BuildMessageAsync(response);
+
+        AlertState.RenderAlertStyles(_alertModel.Status);
+        _submitButtonModel.Status = _alertModel.Status;
+        StateHasChanged();
+    }
+}

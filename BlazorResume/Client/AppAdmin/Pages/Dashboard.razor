@@ -1,0 +1,19 @@
+﻿@page "/app-admin/"
+@page "/app-admin/dashboard"
+@layout Shared.AdminLayout
+
+@attribute [Authorize(Roles = "administrator")]
+
+<Title Value="Administration | Dashboard"></Title>
+
+<section class="container">
+    <header>
+        <h2>Dashboard</h2>
+    </header>
+    <p>Welcome to the administration area. Please use the nav links to browse around and manage the site.</p>
+</section>
+
+
+@code {
+
+}

@@ -1,0 +1,106 @@
+﻿@inject IHttpClientFactory httpClientFactory
+
+@if (_hireinator == null)
+{
+    <div class="text-center">
+        <span class="oi oi-cog spin-icon"></span> Loading...
+    </div>
+}
+else
+{
+    @if (_hireinator.ShowHireinator == true)
+    {
+
+        <section class="text-center mt-4 mb-4 hireinator">
+            <div class="cogs-container">
+                <div class="oi oi-cog cog1" style="@largeGearRotate"></div>
+                <div class="oi oi-cog cog2" style="@largeGearRotate"></div>
+                <header class="h4">The Likely Hire-inator</header>
+                <section class="salary-container">
+                    <input type="range" min="@_hireinator.MinSalary" max="@_hireinator.MaxSalary" step="10000" @bind="_selectedSalary" @bind:event="oninput" style="background: inherit;" />
+                    <div class="salary">@FormatSelectedSalary(_selectedSalary)</div>
+                </section>
+                <section class="likely-section">
+                    <div class="likely-container">
+                        <div class="oi oi-star likely-star1"></div>
+                        <div class="oi oi-star likely-star2"></div>
+                        <div class="likely-text">
+                            Likely to consider?
+                            @ShowResponse(_selectedSalary)
+                            <div class="highlighted-message @startNowClass">Um, I can start right now!</div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </section>
+    }
+}
+
+
+@code {
+    HireinatorModel _hireinator = new HireinatorModel();
+
+    private double _selectedSalary;
+    string startNowClass;
+    string largeGearRotate;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var http = httpClientFactory.CreateClient("BlazorResume.AnonymousAPI");
+        _hireinator = await http.GetFromJsonAsync<HireinatorModel>("api/hireinator");
+
+        _selectedSalary = _hireinator.TargetSalary;
+    }
+
+    string FormatSelectedSalary(double selectedSalary)
+    {
+        return String.Format("{0:c}", selectedSalary);
+    }
+
+    string ShowResponse(double selectedSalary)
+    {
+        startNowClass = "d-none";
+
+        SpinCogs(selectedSalary);
+
+        if (selectedSalary < _hireinator.GrayAreaSalary)
+            return "No";
+        else if (selectedSalary >= _hireinator.GrayAreaSalary && selectedSalary < _hireinator.MaxSalary)
+        {
+            var trailingString = AddTrailingString(selectedSalary);
+
+            return selectedSalary < _hireinator.TargetSalary ? "Possibly" + trailingString : "Yes" + trailingString;
+        }
+        else
+        {
+            startNowClass = "d-block";
+            return string.Empty;
+        }
+
+    }
+
+    string AddTrailingString(double selectedSalary)
+    {
+        if (selectedSalary < _hireinator.TargetSalary)
+            return "...";
+
+        var count = (selectedSalary - _hireinator.TargetSalary) / 10000;
+        var trailingString = string.Empty;
+
+        for (int i = 0; i < count; i++)
+        {
+            trailingString += "!";
+        }
+
+        return trailingString;
+    }
+
+    void SpinCogs(double selectedSalary)
+    {
+        string spinDeg = string.Empty;
+
+        spinDeg = ((selectedSalary - _hireinator.TargetSalary) / 10000 * 2).ToString();
+
+        largeGearRotate = "-webkit-transform: rotate(" + spinDeg + "deg)";
+    }
+}

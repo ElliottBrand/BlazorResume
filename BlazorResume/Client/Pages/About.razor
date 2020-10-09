@@ -1,0 +1,30 @@
+﻿@page "/about"
+@inject IHttpClientFactory httpClientFactory
+
+@if (_about == null)
+{
+    <div class="text-center">
+        <span class="oi oi-cog spin-icon"></span> Loading...
+    </div>
+}
+else
+{
+    <Title Value="@_about.PageTitle"></Title>
+
+    <div class="container pb-4">
+        <h2>@_about.Title</h2>
+        @_about.Details
+    </div>
+}
+
+
+
+@code {
+    AboutModel _about = new AboutModel();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var http = httpClientFactory.CreateClient("BlazorResume.AnonymousAPI");
+        _about = await http.GetFromJsonAsync<AboutModel>("api/about");
+    }
+}

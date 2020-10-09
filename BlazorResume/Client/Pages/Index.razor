@@ -1,0 +1,50 @@
+﻿@page "/"
+@inject IHttpClientFactory httpClientFactory
+
+@if (_resume == null)
+{
+    <div class="text-center">
+        <span class="oi oi-cog spin-icon"></span> Loading...
+    </div>
+}
+else
+{
+    <Title Value="@_resume.PageTitle"></Title>
+    <section class="resume-page">
+        <header class="text-center">
+            <h1>@_resume.FullName</h1>
+            <h3>@_resume.JobTitle</h3>
+        </header>
+        <section class="container">@_resume.Overview</section>
+        <Hireinator></Hireinator>
+        <section class="pb-4">
+            @if (_resume.Jobs.Count == 0)
+            {
+                <div class="container mt-4">
+                    <div class="alert alert-secondary text-secondary">No results found.</div>
+                </div>
+            }
+            else
+            {
+                foreach (var job in _resume.Jobs)
+                {
+                    <Job JobModel="@job"></Job>
+                }
+            }
+        </section>
+    </section>
+}
+
+
+@code{
+    private ResumeModel _resume;
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        var http = httpClientFactory.CreateClient("BlazorResume.AnonymousAPI");
+        _resume = await http.GetFromJsonAsync<ResumeModel>("api/resume");
+
+    }
+
+}

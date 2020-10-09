@@ -1,0 +1,37 @@
+﻿@inherits LayoutComponentBase
+@inject IHttpClientFactory httpClientFactory
+
+<Notice ShowNotice="_settings.ShowNotice" UseMarquee="@_settings.EnableNoticeMarquee" NoticeText="@_settings.NoticeText"></Notice>
+<div class="main">
+    <div class="top-row px-4 auth">
+        <div class="container p-0">
+            <div class="row">
+                <div class="col-12 col-md-6">
+                    <NavMenu />
+                </div>
+                <div class="col-12 col-md-6 text-md-right">
+                    @*<LoginDisplay />*@
+                </div>
+            </div>
+        </div>
+    </div>
+    <SocialLinks LinkedInURL="@_settings.LinkedIn" FacebookURL="@_settings.Facebook" TwitterURL="@_settings.Twitter" GitHubURL="@_settings.GitHub" TwitchURL="@_settings.Twitch" YouTubeURL="@_settings.YouTube"></SocialLinks>
+    <div class="content">
+        @Body
+    </div>
+</div>
+<footer>
+    <SocialLinks LinkedInURL="@_settings.LinkedIn" FacebookURL="@_settings.Facebook" TwitterURL="@_settings.Twitter" GitHubURL="@_settings.GitHub" TwitchURL="@_settings.Twitch" YouTubeURL="@_settings.YouTube" UniformHexColor="#59B4E2"></SocialLinks>
+    Proudly built in <a href="https://blazor.net" target="_blank"><BlazorIcon Width="30" Height="30" HexColor="#59B4E2"></BlazorIcon>Blazor</a>
+</footer>
+<GoogleAnalytics GoogleAnalyticsID="@_settings.GoogleAnalyticsID"></GoogleAnalytics>
+
+@code{
+    private SettingsModel _settings = new SettingsModel();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var http = httpClientFactory.CreateClient("BlazorResume.AnonymousAPI");
+        _settings = await http.GetFromJsonAsync<SettingsModel>("api/settings");
+    }
+}

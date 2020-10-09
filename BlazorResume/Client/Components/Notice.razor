@@ -1,0 +1,21 @@
+﻿
+@if (ShowNotice)
+{
+    <div class="page-notice">
+        @if (UseMarquee)
+        {
+            <marquee>@NoticeText</marquee>
+        }
+        else
+        {
+            @NoticeText
+        }
+    </div>
+}
+
+
+@code {
+    [Parameter] public bool ShowNotice { get; set; }
+    [Parameter] public bool UseMarquee { get; set; }
+    [Parameter] public string NoticeText { get; set; }
+}

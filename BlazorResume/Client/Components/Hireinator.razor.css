@@ -1,0 +1,186 @@
+﻿
+.hireinator {
+    background-color: #78c2ee;
+    border-top: 1px solid #0B89D6;
+    border-bottom: 1px solid #0B89D6;
+}
+    .hireinator .cogs-container {
+        position: relative;
+        display: inline-block;
+        width: 100%;
+        max-width: 1200px;
+        overflow: hidden;
+    }
+
+    .hireinator .cog1 {
+        font-size: 10em;
+        position: absolute;
+        left: 0.5em;
+        top: -0.5em;
+        z-index: 5;
+        color: #0B89D6;
+    }
+
+    .hireinator .cog2 {
+        font-size: 10em;
+        position: absolute;
+        right: 0.5em;
+        top: -0.5em;
+        z-index: 5;
+        color: #0B89D6;
+    }
+
+    .hireinator header.h4 {
+        font-family: 'Luckiest Guy', cursive;
+        font-size: 2.25em;
+        color: #EDD06B;
+        text-shadow: 1px 1px #000;
+        padding-top: 0.25em;
+    }
+
+    .hireinator .salary {
+        padding-top: 4px;
+        font-weight: bold;
+    }
+
+input[type=range] {
+    -webkit-appearance: none;
+}
+
+    input[type=range]:focus {
+        outline: none;
+    }
+
+    input[type=range]::-webkit-slider-runnable-track {
+        width: 100%;
+        height: 5.8px;
+        cursor: pointer;
+        box-shadow: 0px 0px 1px #000000, 0px 0px 0px #0d0d0d;
+        background: #dcdcdc;
+        border-radius: 1.3px;
+        border: 0px solid #010101;
+    }
+
+    input[type=range]::-webkit-slider-thumb {
+        box-shadow: 0.9px 0.9px 1px rgba(0, 0, 49, 0.43), 0px 0px 0.9px rgba(0, 0, 75, 0.43);
+        border: 0px solid #00001e;
+        height: 20px;
+        width: 20px;
+        border-radius: 10px;
+        background: #0B89D6;
+        cursor: pointer;
+        -webkit-appearance: none;
+        margin-top: -7.1px;
+    }
+
+    input[type=range]:focus::-webkit-slider-runnable-track {
+        background: #e1e1e1;
+    }
+
+    input[type=range]::-moz-range-track {
+        width: 100%;
+        height: 5.8px;
+        cursor: pointer;
+        box-shadow: 0px 0px 1px #000000, 0px 0px 0px #0d0d0d;
+        background: #dcdcdc;
+        border-radius: 1.3px;
+        border: 0px solid #010101;
+    }
+
+    input[type=range]::-moz-range-thumb {
+        box-shadow: 0.9px 0.9px 1px rgba(0, 0, 49, 0.43), 0px 0px 0.9px rgba(0, 0, 75, 0.43);
+        border: 0px solid #00001e;
+        height: 20px;
+        width: 20px;
+        border-radius: 10px;
+        background: #0B89D6;
+        cursor: pointer;
+    }
+
+    input[type=range]::-ms-track {
+        width: 100%;
+        height: 5.8px;
+        cursor: pointer;
+        background: transparent;
+        border-color: transparent;
+        color: transparent;
+    }
+
+    input[type=range]::-ms-fill-lower {
+        background: #d7d7d7;
+        border: 0px solid #010101;
+        border-radius: 2.6px;
+        box-shadow: 0px 0px 1px #000000, 0px 0px 0px #0d0d0d;
+    }
+
+    input[type=range]::-ms-fill-upper {
+        background: #dcdcdc;
+        border: 0px solid #010101;
+        border-radius: 2.6px;
+        box-shadow: 0px 0px 1px #000000, 0px 0px 0px #0d0d0d;
+    }
+
+    input[type=range]::-ms-thumb {
+        box-shadow: 0.9px 0.9px 1px rgba(0, 0, 49, 0.43), 0px 0px 0.9px rgba(0, 0, 75, 0.43);
+        border: 0px solid #00001e;
+        height: 20px;
+        width: 20px;
+        border-radius: 10px;
+        background: #d45352;
+        cursor: pointer;
+        margin-top: 0;
+    }
+
+.likely-container {
+    position: relative;
+    display: inline-block;
+    padding-bottom: 0.5em;
+}
+
+.likely-section {
+    
+}
+
+.likely-star1 {
+    position: absolute;
+    left: -30px;
+    top: -20px;
+    color: #EDD06B;
+    font-size: 4em;
+    z-index: 50;
+    -webkit-transform: rotate(-15deg);
+}
+
+.likely-star2 {
+    position: absolute;
+    right: -30px;
+    top: -20px;
+    color: #EDD06B;
+    font-size: 4em;
+    z-index: 50;
+    -webkit-transform: rotate(15deg);
+}
+
+.likely-text {
+    font-family: 'Mouse Memoirs', sans-serif;
+    font-size: 1.6em;
+    line-height: 0.8em;
+    margin: 0.4em auto 0 auto;
+    padding: 0.3em 0.35em 0.35em 0.35em;
+    background-color: #99DAFF;
+    color: #1a1a1a;
+    border-radius: 0.25em;
+    z-index: 55;
+    position: relative;
+    top: -5px;
+    border: 1px solid #EDD06B;
+}
+
+    .likely-text .highlighted-message {
+        background-color: #edde6b;
+        color: #d45352;
+        padding: 0.25em;
+        border-radius: 0.25em;
+        text-shadow: 1px 1px #000;
+        font-size: larger;
+    }

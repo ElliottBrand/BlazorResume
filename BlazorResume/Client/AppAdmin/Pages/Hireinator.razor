@@ -1,0 +1,105 @@
+﻿@page "/app-admin/hireinator"
+@layout Shared.AdminLayout
+
+@attribute [Authorize(Roles = "administrator")]
+@implements IDisposable
+@inject AlertState AlertState
+@inject HttpClient http
+
+<Title Value="Administration | Hire-inator"></Title>
+
+@if (_hireinator == null)
+{
+    <div class="text-center">
+        <span class="oi oi-cog spin-icon"></span> Loading...
+    </div>
+}
+else
+{
+    <section class="container mb-4">
+        <header>
+            <h2>Hire-inator</h2>
+        </header>
+        <EditForm Model="_hireinator" OnValidSubmit="UpdateDetails">
+            <DataAnnotationsValidator />
+
+            <div class="input-group mt-2">
+                <div class="input-group-prepend">
+                    <label class="input-group-text">How Hire-inator</label>
+                </div>
+                <div class="form-control">
+                    <InputCheckbox id="ShowHireinator" @bind-Value="_hireinator.ShowHireinator" />
+                </div>
+            </div>
+            <ValidationMessage For="@(() => _hireinator.ShowHireinator)" />
+
+            <div class="input-group mt-2">
+                <div class="input-group-prepend">
+                    <label class="input-group-text">Min Salary</label>
+                </div>
+                <InputNumber id="MinSalary" @bind-Value="_hireinator.MinSalary" step="10000" class="form-control" />
+            </div>
+            <ValidationMessage For="@(() => _hireinator.MinSalary)" />
+
+            <div class="input-group mt-2">
+                <div class="input-group-prepend">
+                    <label class="input-group-text">Gray-Area Salary</label>
+                </div>
+                <InputNumber id="FullName" @bind-Value="_hireinator.GrayAreaSalary" step="10000"  class="form-control" />
+            </div>
+            <ValidationMessage For="@(() => _hireinator.GrayAreaSalary)" />
+
+            <div class="input-group mt-2">
+                <div class="input-group-prepend">
+                    <label class="input-group-text">Target Salary</label>
+                </div>
+                <InputNumber id="Title" @bind-Value="_hireinator.TargetSalary" step="10000"  class="form-control" />
+            </div>
+            <ValidationMessage For="@(() => _hireinator.TargetSalary)" />
+
+            <div class="input-group mt-2">
+                <div class="input-group-prepend">
+                    <label class="input-group-text">Max Salary</label>
+                </div>
+                <InputNumber id="Title" @bind-Value="_hireinator.MaxSalary" step="10000"  class="form-control" />
+            </div>
+            <ValidationMessage For="@(() => _hireinator.MaxSalary)" />
+
+            <SubmitButton Status="@_submitButtonModel.Status"></SubmitButton>
+        </EditForm>
+        <Alert Message="@_alertModel.Message" Status="@_alertModel.Status" ResultClass="@AlertState.ResultClass" ResultSpan="@AlertState.ResultSpan" ShowOnSuccess="false"></Alert>
+    </section>
+}
+
+@code {
+    private HireinatorModel _hireinator = new HireinatorModel();
+    private AlertModel _alertModel = new AlertModel();
+    private SubmitButtonModel _submitButtonModel = new SubmitButtonModel();
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        _hireinator = await http.GetFromJsonAsync<HireinatorModel>("api/hireinator");
+
+        AlertState.RenderAlert += StateHasChanged;
+    }
+
+    public void Dispose()
+    {
+        AlertState.RenderAlert -= StateHasChanged;
+    }
+
+    private async void UpdateDetails()
+    {
+        _submitButtonModel.Status = "Processing";
+        StateHasChanged();
+
+        var response = await http.PostAsJsonAsync<HireinatorModel>("api/hireinator", _hireinator);
+
+        _alertModel = await AlertHelpers.BuildMessageAsync(response);
+
+        AlertState.RenderAlertStyles(_alertModel.Status);
+        _submitButtonModel.Status = _alertModel.Status;
+        StateHasChanged();
+    }
+    }

@@ -1,0 +1,36 @@
+﻿
+@if(Status == "Processing")
+{
+    <div class="btn btn-secondary mt-2">
+        <span class="oi oi-cog spin-icon"></span> Processing
+    </div>
+}
+else if(Status == "Success")
+{
+<div class="btn btn-success mt-2">
+    <span class="oi oi-check"></span> Success
+</div>
+}
+else
+{
+    <button class="btn btn-primary mt-2">@SubmitButtonText</button>
+}
+
+
+@code {
+    [Parameter] public string Status { get; set; }
+    [Parameter] public string SubmitButtonText { get; set; } = "Update";
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender)
+        {
+            if (Status == "Success")
+            {
+                await Task.Delay(2500);
+                Status = null;
+                StateHasChanged();
+            }
+        }
+    }
+}

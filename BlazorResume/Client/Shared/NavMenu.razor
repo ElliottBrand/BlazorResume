@@ -1,0 +1,26 @@
+﻿<nav class="container">
+    <div class="d-none d-md-block">
+        <NavList></NavList>
+    </div>
+
+    <div class="navbar navbar-dark d-md-none">
+        <button class="navbar-toggler" @onclick="ToggleNavMenu">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+    </div>
+
+    <div class="@_navMenuCssClass" @onclick="ToggleNavMenu" id="navbar-toggler-panel">
+        <NavList></NavList>
+    </div>
+</nav>
+
+@code {
+    private bool _collapseNavMenu = true;
+
+    private string _navMenuCssClass => _collapseNavMenu ? "collapse navbar-collapse" : null;
+
+    private void ToggleNavMenu()
+    {
+        _collapseNavMenu = !_collapseNavMenu;
+    }
+}

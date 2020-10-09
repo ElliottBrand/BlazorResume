@@ -1,0 +1,18 @@
+﻿html, body {
+    background-color: #222;
+    color: #999;
+}
+
+div.main {
+    background-color: #222;
+}
+
+.admin-main div.top-row {
+    min-height: 3.5rem;
+    align-items: center;
+    border-bottom: none;
+}
+
+.admin-main header h2 {
+    color: #777;
+}

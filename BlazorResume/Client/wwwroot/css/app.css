@@ -1,0 +1,195 @@
+﻿@import url('open-iconic/font/css/open-iconic-bootstrap.min.css');
+@import url('https://fonts.googleapis.com/css2?family=Luckiest+Guy&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Mouse+Memoirs&display=swap');
+
+html, body {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    background-color: #C0DFF0;
+}
+
+a, .btn-link {
+    color: #0366d6;
+}
+
+.btn-primary {
+    color: #fff;
+    background-color: #1b6ec2;
+    border-color: #1861ac;
+}
+
+
+footer {
+    padding: 1.25em 1em 1em 1em;
+    text-align: center;
+    background-color: #0B89D6;
+    font-size: 0.8em;
+    color: #59B4E2;
+}
+
+    footer a {
+        color: #59B4E2;
+    }
+
+    footer a:hover {
+        color: #bdd3de;
+    }
+
+    footer #BlazorIconSVG {
+        top: -2px;
+        position: relative;
+    }
+
+.login-container {
+    background-color: #222;
+}
+
+.spin-icon {
+    -webkit-animation: spin 4s infinite linear;
+}
+
+@-webkit-keyframes spin {
+    0% {
+        -webkit-transform: rotate(0deg);
+    }
+
+    100% {
+        -webkit-transform: rotate(360deg);
+    }
+}
+
+.main {
+    width: 100%;
+    background-color: #fff;
+}
+
+    .main header h5 {
+        color: #0B89D6;
+    }
+
+    .main div.top-row {
+        background-color: #0B89D6;
+        min-height: 3.5rem;
+        align-items: center;
+        border-bottom: none;
+    }
+
+        .main .top-row > a, .main .top-row .btn-link {
+            white-space: nowrap;
+            margin-left: 1.5rem;
+        }
+
+        .main .top-row a:first-child {
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+.navbar-toggler-icon {
+    color: #fff;
+}
+
+#navbar-toggler-panel {
+    background-color: #468ed7;
+    padding: 0.5em;
+    z-index: 10;
+    position: relative;
+    top: -2px;
+}
+
+.nav-link {
+    color: #fff;
+}
+
+.content {
+    padding-top: 1.1rem;
+}
+
+.valid.modified:not([type=checkbox]) {
+    outline: 1px solid #26b050;
+}
+
+.invalid {
+    outline: 1px solid red;
+}
+
+.validation-message {
+    color: red;
+}
+
+#blazor-error-ui {
+    background: lightyellow;
+    bottom: 0;
+    box-shadow: 0 -1px 2px rgba(0, 0, 0, 0.2);
+    display: none;
+    left: 0;
+    padding: 0.6rem 1.25rem 0.7rem 1.25rem;
+    position: fixed;
+    width: 100%;
+    z-index: 1000;
+}
+
+    #blazor-error-ui .dismiss {
+        cursor: pointer;
+        position: absolute;
+        right: 0.75rem;
+        top: 0.5rem;
+    }
+
+@media (max-width: 767.98px) {
+    .main .top-row:not(.auth) {
+        display: none;
+    }
+
+    .main .top-row.auth {
+        justify-content: space-between;
+    }
+
+    .main .top-row a, .main .top-row .btn-link {
+        margin-left: 0;
+    }
+}
+
+@media (min-width: 768px) {
+    app {
+    }
+
+    .main .top-row {
+        position: sticky;
+        top: 0;
+    }
+
+    #navbar-toggler-panel {
+        display: none;
+    }
+
+    .navbar-toggler {
+        display: none;
+    }
+
+    .nav-link {
+        text-align: center;
+    }
+
+        .nav-link .oi {
+            width: 100%;
+            text-align: center;
+        }
+
+    nav ul.navbar-nav {
+        display: block;
+        padding-top: .45em;
+    }
+
+        nav ul.navbar-nav .nav-item {
+            display: inline-block;
+            padding: 0 0.5em;
+        }
+
+            nav ul.navbar-nav .nav-item:hover {
+                background-color: #4DA6DD;
+                border-radius: 0.25em;
+            }
+
+                nav ul.navbar-nav .nav-item a:hover {
+                    color: #fff;
+                }
+}

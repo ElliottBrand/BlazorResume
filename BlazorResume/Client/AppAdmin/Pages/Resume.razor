@@ -1,0 +1,91 @@
+﻿@page "/app-admin/resume"
+@layout Shared.AdminLayout
+
+@attribute [Authorize(Roles = "administrator")]
+@implements IDisposable
+@inject AlertState AlertState
+@inject HttpClient http
+
+<Title Value="Administration | Resume"></Title>
+
+@if (_resume == null)
+{
+    <div class="text-center">
+        <span class="oi oi-cog spin-icon"></span> Loading...
+    </div>
+}
+else
+{
+    <section class="container mb-4">
+        <header>
+            <h2>Resume</h2>
+        </header>
+        <EditForm Model="_resume" OnValidSubmit="HandleValidSubmit">
+            <DataAnnotationsValidator />
+
+            <div class="input-group mt-2">
+                <div class="input-group-prepend">
+                    <label class="input-group-text">Page Title</label>
+                </div>
+                <InputText id="PageTitle" @bind-Value="_resume.PageTitle" class="form-control" />
+            </div>
+            <ValidationMessage For="@(() => _resume.PageTitle)" />
+
+            <div class="input-group mt-2">
+                <div class="input-group-prepend">
+                    <label class="input-group-text">Full Name</label>
+                </div>
+                <InputText id="FullName" @bind-Value="_resume.FullName" class="form-control" />
+            </div>
+            <ValidationMessage For="@(() => _resume.FullName)" />
+
+            <div class="input-group mt-2">
+                <div class="input-group-prepend">
+                    <label class="input-group-text">Title</label>
+                </div>
+                <InputText id="Title" @bind-Value="_resume.JobTitle" class="form-control" />
+            </div>
+            <ValidationMessage For="@(() => _resume.JobTitle)" />
+
+            <div class="mt-2">
+                <InputTextArea id="Overview" @bind-Value="_resume.Overview" rows="5" class="form-control" />
+            </div>
+            <ValidationMessage For="@(() => _resume.Overview)" />
+
+            <SubmitButton Status="@_submitButtonModel.Status"></SubmitButton>
+        </EditForm>
+        <Alert Message="@_alertModel.Message" Status="@_alertModel.Status" ResultClass="@AlertState.ResultClass" ResultSpan="@AlertState.ResultSpan" ShowOnSuccess="false"></Alert>
+    </section>
+}
+
+@code {
+    private ResumeModel _resume = new ResumeModel();
+    private AlertModel _alertModel = new AlertModel();
+    private SubmitButtonModel _submitButtonModel = new SubmitButtonModel();
+
+    protected override async Task OnInitializedAsync()
+    {
+        _resume = await http.GetFromJsonAsync<ResumeModel>("api/resume");
+
+        AlertState.RenderAlert += StateHasChanged;
+    }
+
+    public void Dispose()
+    {
+        AlertState.RenderAlert -= StateHasChanged;
+    }
+
+    private async void HandleValidSubmit()
+    {
+        _submitButtonModel.Status = "Processing";
+        StateHasChanged();
+
+        var response = await http.PostAsJsonAsync<ResumeModel>("api/resume", _resume);
+
+        _alertModel = await AlertHelpers.BuildMessageAsync(response);
+
+        AlertState.RenderAlertStyles(_alertModel.Status);
+        _submitButtonModel.Status = _alertModel.Status;
+        StateHasChanged();
+    }
+}

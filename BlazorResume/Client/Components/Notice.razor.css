@@ -1,0 +1,10 @@
+﻿.page-notice {
+    background-color: #EDD06B;
+    color: #9f791f;
+    padding: 0.5em;
+    text-align: center;
+}
+
+.page-notice marquee {
+    margin-top: 0.25em;
+}

@@ -1,0 +1,20 @@
+﻿<div class="container pt-4">
+    <header><h5>@JobModel.JobTitle</h5></header>
+    <div>@JobModel.CompanyName</div>
+    <small class="text-muted">@DisplayFormattedDate(JobModel.StartDate) - @DisplayFormattedDate(JobModel.EndDate)</small>
+    <div>@JobModel.Details</div>
+</div>
+
+
+@code {
+    [Parameter] public JobModel JobModel { get; set; }
+
+    string DisplayFormattedDate(DateTime? dateTime)
+    {
+        if (String.IsNullOrEmpty(dateTime.ToString()))
+            return "Present";
+
+        return String.Format("{0:MMM yyyy}", dateTime);
+
+    }
+}

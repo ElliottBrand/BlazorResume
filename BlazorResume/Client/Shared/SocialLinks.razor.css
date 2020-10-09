@@ -1,0 +1,28 @@
+﻿
+.social-links {
+    text-align: center;
+    max-width: 1200px;
+    border-bottom-left-radius: 0.25em;
+    border-bottom-right-radius: 0.25em;
+    background-color: #eee;
+    padding: 0.5em;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.social-links a {
+    margin-right: 0.5em;
+    color: inherit;
+}
+
+    .social-links a:hover > svg * {
+        fill: #555;
+    }
+
+footer .social-links {
+    background-color: inherit;
+}
+
+footer .social-links a:hover > svg * {
+    fill: #bdd3de;
+}

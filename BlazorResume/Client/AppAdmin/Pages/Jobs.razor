@@ -1,0 +1,143 @@
+﻿@page "/app-admin/jobs"
+@layout Shared.AdminLayout
+
+@implements IDisposable
+@inject AlertState AlertState
+@inject HttpClient http
+@attribute [Authorize(Roles = "administrator")]
+
+<Title Value="Administration | Jobs"></Title>
+
+@if (_jobs == null)
+{
+    <section class="text-center">
+        <span class="oi oi-cog spin-icon"></span> Loading...
+    </section>
+}
+else if (_jobs.Count == 0)
+{
+    <section class="container">
+        <header>
+            <h2>Jobs</h2>
+        </header>
+        <div class="alert alert-secondary text-secondary text-center">No results found.</div>
+    </section>
+}
+else
+{
+    <section class="container">
+        <header>
+            <h2>Jobs</h2>
+        </header>
+        <ul class="list-group">
+            @foreach (var job in _jobs)
+            {
+                <li class="list-group-item">
+                    @job.JobTitle
+                    <div class="float-md-right">
+                        <a href="/app-admin/jobs/@job.JobId" class="btn btn-sm btn-primary">Edit</a>
+                        <button @onclick="@(() => DeleteJob(job.JobId))" class="btn btn-sm btn-danger">Delete</button>
+                    </div>
+                </li>
+            }
+        </ul>
+    </section>
+}
+
+<section class="container mt-2 mb-4">
+    <header>
+        <h2>Add Job</h2>
+    </header>
+    <EditForm Model="_job" OnValidSubmit="HandleValidSubmit">
+        <DataAnnotationsValidator />
+
+        <div class="input-group mt-2">
+            <div class="input-group-prepend">
+                <label class="input-group-text">Job Title</label>
+            </div>
+            <InputText id="FullName" @bind-Value="_job.JobTitle" class="form-control" />
+        </div>
+        <ValidationMessage For="@(() => _job.JobTitle)" />
+
+        <div class="input-group mt-2">
+            <div class="input-group-prepend">
+                <label class="input-group-text">Company</label>
+            </div>
+            <InputText id="Title" @bind-Value="_job.CompanyName" class="form-control" />
+        </div>
+        <ValidationMessage For="@(() => _job.CompanyName)" />
+
+        <div class="mt-2">
+            <InputTextArea id="Overview" @bind-Value="_job.Details" class="form-control" rows="5" />
+        </div>
+        <ValidationMessage For="@(() => _job.Details)" />
+
+        <div class="input-group mt-2">
+            <div class="input-group-prepend">
+                <label class="input-group-text">Start Date</label>
+            </div>
+            <InputDate @bind-Value="_job.StartDate" class="form-control"></InputDate>
+        </div>
+
+        <div class="input-group mt-2">
+            <div class="input-group-prepend">
+                <label class="input-group-text">End Date</label>
+            </div>
+            <InputDate @bind-Value="_job.EndDate" class="form-control"></InputDate>
+        </div>
+
+        <SubmitButton Status="@_submitButtonModel.Status" SubmitButtonText="Add"></SubmitButton>
+    </EditForm>
+</section>
+
+@code {
+    private List<JobModel> _jobs = new List<JobModel>();
+    private JobModel _job = new JobModel();
+    private AlertModel _alertModel = new AlertModel();
+    private SubmitButtonModel _submitButtonModel = new SubmitButtonModel();
+
+    protected override async Task OnInitializedAsync()
+    {
+        AlertState.RenderAlert += StateHasChanged;
+
+        _jobs = await http.GetFromJsonAsync<List<JobModel>>("api/jobs");
+        _job.StartDate = DateTime.Now;
+    }
+
+    public void Dispose()
+    {
+        AlertState.RenderAlert -= StateHasChanged;
+    }
+
+    private async void HandleValidSubmit()
+    {
+        _submitButtonModel.Status = "Processing";
+        StateHasChanged();
+
+        var response = await http.PostAsJsonAsync<JobModel>("api/jobs", _job);
+
+        _alertModel = await AlertHelpers.BuildMessageAsync(response);
+
+        if (_alertModel.Status == "Success")
+            _jobs = await http.GetFromJsonAsync<List<JobModel>>("api/jobs");
+
+        AlertState.RenderAlertStyles(_alertModel.Status);
+        _submitButtonModel.Status = _alertModel.Status;
+
+        StateHasChanged();
+    }
+
+    private async Task DeleteJob(int jobId)
+    {
+        var response = await http.PostAsJsonAsync<int>("api/jobs/delete/" + jobId, jobId);
+        Console.WriteLine(response);
+        var updated = await BlazorResume.Shared.Helpers.ResponseMessageHelpers.GetBoolFromHttpResponseMessage(response);
+
+        if (updated == true)
+        {
+            _jobs = await http.GetFromJsonAsync<List<JobModel>>("api/jobs");
+
+            StateHasChanged();
+        }
+    }
+}

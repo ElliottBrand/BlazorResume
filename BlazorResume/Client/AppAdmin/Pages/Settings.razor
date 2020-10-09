@@ -1,0 +1,165 @@
+﻿@page "/app-admin/settings"
+@layout Shared.AdminLayout
+
+@using Microsoft.AspNetCore.Authorization
+@implements IDisposable
+@inject AlertState AlertState
+@inject HttpClient http
+@attribute [Authorize(Roles = "administrator")]
+
+<Title Value="Administration | Settings"></Title>
+
+@if (_settings == null)
+{
+    <div class="text-center">
+        <span class="oi oi-cog spin-icon"></span> Loading...
+    </div>
+}
+else
+{
+    <section class="container mb-4">
+        <header>
+            <h2>Settings</h2>
+        </header>
+        <EditForm Model="_settings" OnValidSubmit="UpdateDetails">
+            <DataAnnotationsValidator />
+
+            <div class="input-group mt-2">
+                <div class="input-group-prepend">
+                    <label class="input-group-text">Phone Number</label>
+                </div>
+                <InputText id="PhoneNumber" @bind-Value="_settings.PhoneNumber" class="form-control" />
+            </div>
+            <ValidationMessage For="@(() => _settings.PhoneNumber)" />
+
+            <div class="input-group mt-2">
+                <div class="input-group-prepend">
+                    <label class="input-group-text">Show Phone</label>
+                </div>
+                <div class="form-control">
+                    <InputCheckbox id="ShowPhone" @bind-Value="_settings.ShowPhone" />
+                </div>
+            </div>
+            <ValidationMessage For="@(() => _settings.ShowPhone)" />
+
+            <div class="input-group mt-2">
+                <div class="input-group-prepend">
+                    <label class="input-group-text">Notice Text</label>
+                </div>
+                <InputText id="NoticeText" @bind-Value="_settings.NoticeText" class="form-control" />
+            </div>
+            <ValidationMessage For="@(() => _settings.NoticeText)" />
+
+            <div class="input-group mt-2">
+                <div class="input-group-prepend">
+                    <label class="input-group-text">Show Notice</label>
+                </div>
+                <div class="form-control">
+                    <InputCheckbox id="ShowNotice" @bind-Value="_settings.ShowNotice" />
+                </div>
+            </div>
+            <ValidationMessage For="@(() => _settings.ShowNotice)" />
+
+            <div class="input-group mt-2">
+                <div class="input-group-prepend">
+                    <label class="input-group-text">Enable Notice Marquee</label>
+                </div>
+                <div class="form-control">
+                    <InputCheckbox id="EnableNoticeMarquee" @bind-Value="_settings.EnableNoticeMarquee" />
+                </div>
+            </div>
+            <ValidationMessage For="@(() => _settings.EnableNoticeMarquee)" />
+
+            <div class="input-group mt-2">
+                <div class="input-group-prepend">
+                    <label class="input-group-text">LinkedIn</label>
+                </div>
+                <InputText id="LinkedIn" @bind-Value="_settings.LinkedIn" class="form-control" />
+            </div>
+            <ValidationMessage For="@(() => _settings.LinkedIn)" />
+
+            <div class="input-group mt-2">
+                <div class="input-group-prepend">
+                    <label class="input-group-text">Twitter</label>
+                </div>
+                <InputText id="Twitter" @bind-Value="_settings.Twitter" class="form-control" />
+            </div>
+            <ValidationMessage For="@(() => _settings.Twitter)" />
+
+            <div class="input-group mt-2">
+                <div class="input-group-prepend">
+                    <label class="input-group-text">Facebook</label>
+                </div>
+                <InputText id="Facebook" @bind-Value="_settings.Facebook" class="form-control" />
+            </div>
+            <ValidationMessage For="@(() => _settings.Facebook)" />
+
+            <div class="input-group mt-2">
+                <div class="input-group-prepend">
+                    <label class="input-group-text">GitHub</label>
+                </div>
+                <InputText id="GitHub" @bind-Value="_settings.GitHub" class="form-control" />
+            </div>
+            <ValidationMessage For="@(() => _settings.GitHub)" />
+
+            <div class="input-group mt-2">
+                <div class="input-group-prepend">
+                    <label class="input-group-text">YouTube</label>
+                </div>
+                <InputText id="YouTube" @bind-Value="_settings.YouTube" class="form-control" />
+            </div>
+            <ValidationMessage For="@(() => _settings.YouTube)" />
+
+            <div class="input-group mt-2">
+                <div class="input-group-prepend">
+                    <label class="input-group-text">Twitch</label>
+                </div>
+                <InputText id="Twitch" @bind-Value="_settings.Twitch" class="form-control" />
+            </div>
+            <ValidationMessage For="@(() => _settings.Twitch)" />
+
+            <div class="input-group mt-2">
+                <div class="input-group-prepend">
+                    <label class="input-group-text">Google Analytics ID</label>
+                </div>
+                <InputText id="GoogleAnalyticsID" @bind-Value="_settings.GoogleAnalyticsID" class="form-control" />
+            </div>
+            <ValidationMessage For="@(() => _settings.GoogleAnalyticsID)" />
+
+            <SubmitButton Status="@_submitButtonModel.Status"></SubmitButton>
+        </EditForm>
+        <Alert Message="@_alertModel.Message" Status="@_alertModel.Status" ResultClass="@AlertState.ResultClass" ResultSpan="@AlertState.ResultSpan" ShowOnSuccess="false"></Alert>
+    </section>
+}
+
+@code {
+    private SettingsModel _settings = new SettingsModel();
+    private AlertModel _alertModel = new AlertModel();
+    private SubmitButtonModel _submitButtonModel = new SubmitButtonModel();
+
+    protected override async Task OnInitializedAsync()
+    {
+        _settings = await http.GetFromJsonAsync<SettingsModel>("api/settings");
+
+        AlertState.RenderAlert += StateHasChanged;
+    }
+
+    public void Dispose()
+    {
+        AlertState.RenderAlert -= StateHasChanged;
+    }
+
+    public async void UpdateDetails()
+    {
+        _submitButtonModel.Status = "Processing";
+        StateHasChanged();
+
+        var response = await http.PostAsJsonAsync<SettingsModel>("api/settings", _settings);
+
+        _alertModel = await AlertHelpers.BuildMessageAsync(response);
+
+        AlertState.RenderAlertStyles(_alertModel.Status);
+        _submitButtonModel.Status = _alertModel.Status;
+        StateHasChanged();
+    }
+}
