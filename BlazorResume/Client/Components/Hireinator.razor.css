@@ -12,22 +12,8 @@
         overflow: hidden;
     }
 
-    .hireinator .cog1 {
-        font-size: 10em;
-        position: absolute;
-        left: 0.5em;
-        top: -0.5em;
-        z-index: 5;
-        color: #0B89D6;
-    }
-
-    .hireinator .cog2 {
-        font-size: 10em;
-        position: absolute;
-        right: 0.5em;
-        top: -0.5em;
-        z-index: 5;
-        color: #0B89D6;
+    .hireinator .cog1, .hireinator .cog2 {
+        display: none;
     }
 
     .hireinator header.h4 {
@@ -36,6 +22,8 @@
         color: #EDD06B;
         text-shadow: 1px 1px #000;
         padding-top: 0.25em;
+        z-index: 6;
+        position: relative;
     }
 
     .hireinator .salary {
@@ -184,3 +172,25 @@ input[type=range] {
         text-shadow: 1px 1px #000;
         font-size: larger;
     }
+
+@media (min-width: 768px) {
+    .hireinator .cog1 {
+        display: block;
+        font-size: 10em;
+        position: absolute;
+        left: 0.5em;
+        top: -0.5em;
+        z-index: 5;
+        color: #0B89D6;
+    }
+
+    .hireinator .cog2 {
+        display: block;
+        font-size: 10em;
+        position: absolute;
+        right: 0.5em;
+        top: -0.5em;
+        z-index: 5;
+        color: #0B89D6;
+    }
+}
