@@ -15,7 +15,7 @@ else
             <div class="cogs-container">
                 <div class="oi oi-cog cog1" style="@largeGearRotate"></div>
                 <div class="oi oi-cog cog2" style="@largeGearRotate"></div>
-                <header class="h4">The Likely Hire-inator</header>
+                <header class="h4">The Likely <span style="white-space: nowrap;">Hire-inator</span></header>
                 <section class="salary-container">
                     <input type="range" min="@_hireinator.MinSalary" max="@_hireinator.MaxSalary" step="10000" @bind="_selectedSalary" @bind:event="oninput" style="background: inherit;" />
                     <div class="salary">@FormatSelectedSalary(_selectedSalary)</div>

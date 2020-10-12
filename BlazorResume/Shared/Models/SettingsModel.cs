@@ -21,5 +21,11 @@ namespace BlazorResume.Shared.Models
         public string Twitch { get; set; }
         public string YouTube { get; set; }
         public string GoogleAnalyticsID { get; set; }
+        public string SendGridKey { get; set; }
+
+        [EmailAddress]
+        public string EmailAddress { get; set; }
+        public string ReCaptchaKey { get; set; }
+        public string ReCaptchaSecretKey { get; set; }
     }
 }

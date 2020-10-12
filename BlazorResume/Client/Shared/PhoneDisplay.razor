@@ -1,0 +1,15 @@
+﻿
+@if (ShowPhone && !string.IsNullOrEmpty(PhoneNumber))
+{
+    <div class="phone-home-container">
+        <div class="phone-home">
+            <span class="oi oi-phone"></span> @PhoneNumber
+        </div>
+    </div>
+}
+
+
+@code {
+    [Parameter] public string PhoneNumber { get; set; }
+    [Parameter] public bool ShowPhone { get; set; }
+}

@@ -18,7 +18,7 @@
 
                 await Task.Delay(1).ContinueWith(async t =>
                 {
-                    await jsRuntime.InvokeVoidAsync("analyticsMethods.loadGoogleAnalytics", navManager.ToBaseRelativePath(navManager.Uri), GoogleAnalyticsID);
+                    await jsRuntime.InvokeVoidAsync("googleMethods.loadGoogleAnalytics", navManager.ToBaseRelativePath(navManager.Uri), GoogleAnalyticsID);
                 });
             }
         }
@@ -35,7 +35,7 @@
         {
             await Task.Delay(1).ContinueWith(async t =>
             {
-                await jsRuntime.InvokeVoidAsync("analyticsMethods.loadGoogleAnalytics", new Uri(args.Location).PathAndQuery, GoogleAnalyticsID);
+                await jsRuntime.InvokeVoidAsync("googleMethods.loadGoogleAnalytics", new Uri(args.Location).PathAndQuery, GoogleAnalyticsID);
             });
         }
     }

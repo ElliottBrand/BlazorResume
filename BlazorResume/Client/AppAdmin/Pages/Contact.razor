@@ -1,0 +1,93 @@
+﻿@page "/app-admin/contact"
+@layout Shared.AdminLayout
+
+@implements IDisposable
+@inject AlertState AlertState
+@inject HttpClient http
+@attribute [Authorize(Roles = "administrator")]
+
+<Title Value="Administration | Contact"></Title>
+
+@if (_contact == null)
+{
+    <div class="text-center">
+        <span class="oi oi-cog spin-icon"></span> Loading...
+    </div>
+}
+else
+{
+    <section class="container mb-4">
+        <header>
+            <h2>Contact</h2>
+        </header>
+        <EditForm Model="_contact" OnValidSubmit="HandleValidSubmit">
+            <DataAnnotationsValidator />
+
+            <div class="input-group mt-2">
+                <div class="input-group-prepend">
+                    <label class="input-group-text">Page Title</label>
+                </div>
+                <InputText id="PageTitle" @bind-Value="_contact.PageTitle" class="form-control" />
+            </div>
+            <ValidationMessage For="@(() => _contact.PageTitle)" />
+
+            <div class="input-group mt-2">
+                <div class="input-group-prepend">
+                    <label class="input-group-text">Title</label>
+                </div>
+                <InputText id="Title" @bind-Value="_contact.Title" class="form-control" />
+            </div>
+            <ValidationMessage For="@(() => _contact.Title)" />
+
+            <div class="input-group mt-2">
+                <div class="input-group-prepend">
+                    <label class="input-group-text">Show Contact Form</label>
+                </div>
+                <div class="form-control">
+                    <InputCheckbox id="ShowContactForm" @bind-Value="_contact.ShowContactForm" />
+                </div>
+            </div>
+            <ValidationMessage For="@(() => _contact.ShowContactForm)" />
+
+            <div class="mt-2">
+                <InputTextArea id="Overview" @bind-Value="_contact.Details" rows="5" class="form-control" />
+            </div>
+            <ValidationMessage For="@(() => _contact.Details)" />
+
+            <SubmitButton Status="@_submitButtonModel.Status"></SubmitButton>
+        </EditForm>
+        <Alert Message="@_alertModel.Message" Status="@_alertModel.Status" ResultClass="@AlertState.ResultClass" ResultSpan="@AlertState.ResultSpan" ShowOnSuccess="false"></Alert>
+    </section>
+}
+
+@code {
+    private ContactModel _contact = new ContactModel();
+    private AlertModel _alertModel = new AlertModel();
+    private SubmitButtonModel _submitButtonModel = new SubmitButtonModel();
+
+    protected override async Task OnInitializedAsync()
+    {
+        _contact = await http.GetFromJsonAsync<ContactModel>("api/contact");
+
+        AlertState.RenderAlert += StateHasChanged;
+    }
+
+    public void Dispose()
+    {
+        AlertState.RenderAlert -= StateHasChanged;
+    }
+
+    private async void HandleValidSubmit()
+    {
+        _submitButtonModel.Status = "Processing";
+        StateHasChanged();
+
+        var response = await http.PostAsJsonAsync<ContactModel>("api/contact", _contact);
+
+        _alertModel = await AlertHelpers.BuildMessageAsync(response);
+
+        AlertState.RenderAlertStyles(_alertModel.Status);
+        _submitButtonModel.Status = _alertModel.Status;
+        StateHasChanged();
+    }
+}

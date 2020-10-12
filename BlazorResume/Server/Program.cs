@@ -33,6 +33,7 @@ namespace BlazorResume.Server
                     SeedHireinator.Initialize(context);
                     SeedAbout.Initialize(context);
                     SeedSettings.Initialize(context);
+                    SeedContact.Initialize(context);
                 }
             }
 

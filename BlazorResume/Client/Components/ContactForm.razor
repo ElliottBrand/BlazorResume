@@ -1,0 +1,119 @@
+﻿@inject IJSRuntime JSRuntime
+@inject IHttpClientFactory httpClientFactory
+
+<section class="contact-form-section mt-4">
+    <EditForm Model="_contactFormModel" OnValidSubmit="HandleValidSubmit">
+        <DataAnnotationsValidator />
+
+        <div class="input-group">
+            <div class="input-group-prepend">
+                <label class="input-group-text">Name</label>
+            </div>
+            <InputText id="Name" @bind-Value="_contactFormModel.SenderName" class="form-control" />
+        </div>
+        <ValidationMessage For="@(() => _contactFormModel.SenderName)" />
+
+        <div class="input-group mt-2">
+            <div class="input-group-prepend">
+                <label class="input-group-text">Email</label>
+            </div>
+            <InputText id="Email" @bind-Value="_contactFormModel.SenderEmail" class="form-control" />
+        </div>
+        <ValidationMessage For="@(() => _contactFormModel.SenderEmail)" />
+
+        <div class="input-group mt-2">
+            <div class="input-group-prepend">
+                <label class="input-group-text">Phone</label>
+            </div>
+            <InputText id="Phone" @bind-Value="_contactFormModel.SenderPhone" class="form-control" />
+        </div>
+        <ValidationMessage For="@(() => _contactFormModel.SenderPhone)" />
+
+        <div class="input-group mt-2">
+            <div class="input-group-prepend">
+                <label class="input-group-text">Message</label>
+            </div>
+            <InputTextArea id="Message" @bind-Value="_contactFormModel.SenderMessage" class="form-control" rows="5" />
+        </div>
+        <ValidationMessage For="@(() => _contactFormModel.SenderMessage)" />
+
+        <SubmitButton Status="@_submitButtonModel.Status" SubmitButtonText="Send"></SubmitButton>
+    </EditForm>
+
+    @if (_error)
+    {
+        <div class="alert alert-danger mt-2">
+            <span>Sorry, there was a problem sending your message.</span>
+        </div>
+    }
+
+</section>
+
+
+@code {
+    private ContactFormModel _contactFormModel = new ContactFormModel();
+    private AlertModel _alertModel = new AlertModel();
+    private SubmitButtonModel _submitButtonModel = new SubmitButtonModel();
+    string grecaptcha { get; set; }
+    private string _repcatchaPublicKey;
+    private bool _error;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var http = httpClientFactory.CreateClient("BlazorResume.AnonymousAPI");
+        var settings = await http.GetFromJsonAsync<SettingsModel>("api/settings");
+
+        _repcatchaPublicKey = settings.ReCaptchaKey;
+        await JSRuntime.InvokeVoidAsync("googleMethods.loadCaptchaHeadScript", _repcatchaPublicKey);
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender)
+        {
+            if(grecaptcha == null)
+            {
+                // Need to wait briefly to allow the Google ReCaptcha script time to build in the head and return data
+                // It's built in the first JS Invoke during OnIntializedAsync
+                // Also needed to run this after the first render before it worked and needed to only run if grecaptcha was null, 
+                // so it didn't reload in a never-ending loop
+                await Task.Delay(2).ContinueWith(async t =>
+                {
+                    grecaptcha = await JSRuntime.InvokeAsync<string>("googleMethods.loadCaptcha", _repcatchaPublicKey);
+                });
+
+                if(grecaptcha != null)
+                {
+                     _contactFormModel.ReCaptcha = grecaptcha;
+                }
+
+                StateHasChanged();
+            }
+        }
+    }
+
+    private async void HandleValidSubmit()
+    {
+        Console.WriteLine(_contactFormModel.ReCaptcha);
+        var http = httpClientFactory.CreateClient("BlazorResume.AnonymousAPI");
+        var response = await http.PostAsJsonAsync<ContactFormModel>("/api/contactform", _contactFormModel);
+
+        _alertModel = await AlertHelpers.BuildMessageAsync(response);
+
+        _submitButtonModel.Status = _alertModel.Status;
+
+        if(_alertModel.Status == "Success")
+        {
+            _error = false;
+            _contactFormModel.SenderName = string.Empty;
+            _contactFormModel.SenderEmail = string.Empty;
+            _contactFormModel.SenderPhone = string.Empty;
+            _contactFormModel.SenderMessage = string.Empty;
+        }
+        else
+        {
+            _error = true;
+        }
+        StateHasChanged();
+    }
+}

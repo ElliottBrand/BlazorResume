@@ -7,30 +7,32 @@ using System.Threading.Tasks;
 
 namespace BlazorResume.Server.Data.Repository
 {
-    public class About
+    public class Contact
     {
         private readonly ApplicationDbContext _context;
 
-        public About(ApplicationDbContext context)
+        public Contact(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        public async Task<AboutModel> GetAboutDetailsAsync()
+        public async Task<ContactModel> GetContactDetailsAsync()
         {
-            return await _context.About.FirstOrDefaultAsync();
+            return await _context.Contact.FirstOrDefaultAsync();
         }
 
-        public async Task<bool> UpdateAboutDetailsAsync(AboutModel aboutModel)
+        public async Task<bool> UpdateContactDetailsAsync(ContactModel contactModel)
         {
-            var about = await _context.About.FirstOrDefaultAsync();
-            if (about != null)
+            var contact = await _context.Contact.FirstOrDefaultAsync();
+
+            if(contact != null)
             {
                 try
                 {
-                    about.Title = aboutModel.Title;
-                    // about.Image = aboutModel.Image;
-                    about.Details = aboutModel.Details;
+                    contact.PageTitle = contactModel.PageTitle;
+                    contact.Title = contactModel.Title;
+                    contact.Details = contactModel.Details;
+                    contact.ShowContactForm = contactModel.ShowContactForm;
 
                     await _context.SaveChangesAsync();
                     return true;
@@ -40,7 +42,6 @@ namespace BlazorResume.Server.Data.Repository
                     return false;
                 }
             }
-
             return false;
         }
     }

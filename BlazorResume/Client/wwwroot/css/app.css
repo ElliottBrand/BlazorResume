@@ -1,9 +1,11 @@
 ﻿@import url('open-iconic/font/css/open-iconic-bootstrap.min.css');
 @import url('https://fonts.googleapis.com/css2?family=Luckiest+Guy&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Mouse+Memoirs&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@300;600&display=swap');
 
 html, body {
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-family: 'Oswald', Helvetica, Arial, sans-serif;
+    font-size: 1.18em;
     background-color: #C0DFF0;
 }
 
@@ -41,6 +43,14 @@ footer {
 
 .login-container {
     background-color: #222;
+}
+
+.phone-home-container {
+    /*position: relative;*/
+    /*height: 60px;*/
+    text-align: center;
+    padding: 0.5em;
+    color: #fff;
 }
 
 .spin-icon {
@@ -88,7 +98,6 @@ footer {
 }
 
 #navbar-toggler-panel {
-    background-color: #468ed7;
     padding: 0.5em;
     z-index: 10;
     position: relative;
@@ -154,6 +163,7 @@ footer {
 
     .main .top-row {
         position: sticky;
+        z-index: 110;
         top: 0;
     }
 
@@ -192,4 +202,18 @@ footer {
                 nav ul.navbar-nav .nav-item a:hover {
                     color: #fff;
                 }
+
+    .phone-home-container {
+        position: relative;
+        height: 60px;
+        text-align: inherit;
+    }
+
+    .phone-home {
+        display: block;
+        position: absolute;
+        top: 50%;
+        bottom: 50%;
+        right: 0;
+    }
 }

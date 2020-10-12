@@ -1,7 +1,7 @@
-﻿@page "/about"
+﻿@page "/contact"
 @inject IHttpClientFactory httpClientFactory
 
-@if (_about == null)
+@if (_contact == null)
 {
     <div class="text-center">
         <span class="oi oi-cog spin-icon"></span> Loading...
@@ -9,20 +9,24 @@
 }
 else
 {
-    <Title Value="@_about.PageTitle"></Title>
+    <Title Value="@_contact.PageTitle"></Title>
 
     <div class="container pb-4">
-        <h2>@_about.Title</h2>
-        @_about.Details
+        <h2>@_contact.Title</h2>
+        @_contact.Details
+
+        <ContactForm></ContactForm>
     </div>
+
+    
 }
 
 @code {
-    private AboutModel _about = new AboutModel();
+    private ContactModel _contact = new ContactModel();
 
     protected override async Task OnInitializedAsync()
     {
         var http = httpClientFactory.CreateClient("BlazorResume.AnonymousAPI");
-        _about = await http.GetFromJsonAsync<AboutModel>("api/about");
+        _contact = await http.GetFromJsonAsync<ContactModel>("api/contact");
     }
 }

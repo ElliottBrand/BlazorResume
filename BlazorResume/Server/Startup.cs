@@ -1,4 +1,5 @@
 using BlazorResume.Server.Data;
+using BlazorResume.Server.Helpers;
 using BlazorResume.Server.Interfaces;
 using BlazorResume.Server.Models;
 using Microsoft.AspNetCore.Authentication;
@@ -61,6 +62,8 @@ namespace BlazorResume.Server
             services.AddTransient<IManageAbout, ManageAbout>();
             services.AddTransient<IManageHireinator, ManageHireinator>();
             services.AddTransient<IManageSettings, ManageSettings>();
+            services.AddTransient<IManageContact, ManageContact>();
+            services.AddScoped<IDataEncryptionHelper, DataEncryptionHelper>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

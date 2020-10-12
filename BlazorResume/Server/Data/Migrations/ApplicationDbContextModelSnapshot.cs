@@ -108,6 +108,30 @@ namespace BlazorResume.Server.Migrations
                     b.ToTable("About");
                 });
 
+            modelBuilder.Entity("BlazorResume.Shared.Models.ContactModel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
+
+                    b.Property<string>("Details")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PageTitle")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("ShowContactForm")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Title")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Contact");
+                });
+
             modelBuilder.Entity("BlazorResume.Shared.Models.HireinatorModel", b =>
                 {
                     b.Property<int>("Id")
@@ -201,6 +225,9 @@ namespace BlazorResume.Server.Migrations
                         .HasColumnType("int")
                         .UseIdentityColumn();
 
+                    b.Property<string>("EmailAddress")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<bool>("EnableNoticeMarquee")
                         .HasColumnType("bit");
 
@@ -223,6 +250,15 @@ namespace BlazorResume.Server.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PhoneNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ReCaptchaKey")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ReCaptchaSecretKey")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SendGridKey")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("ShowNotice")

@@ -126,6 +126,83 @@ else
             </div>
             <ValidationMessage For="@(() => _settings.GoogleAnalyticsID)" />
 
+            <div class="input-group mt-2">
+                <div class="input-group-prepend">
+                    <label class="input-group-text">SendGrid Key</label>
+                </div>
+                <InputText id="SendGridKey" @bind-Value="_settings.SendGridKey" class="form-control" type="@_sendGridFieldType" />
+                <div class="input-group-append">
+                    <div class="input-group-text">
+                        <label class="switch">
+                            @if (_sendGridFieldChecked == true)
+                            {
+                                <input type="checkbox" @onchange="@SendGridCheckChanged" checked="checked" />
+                            }
+                            else
+                            {
+                                <input type="checkbox" @onchange="@SendGridCheckChanged" />
+                            }
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <ValidationMessage For="@(() => _settings.SendGridKey)" />
+
+            <div class="input-group mt-2">
+                <div class="input-group-prepend">
+                    <label class="input-group-text">Email Address</label>
+                </div>
+                <InputText id="EmailAddress" @bind-Value="_settings.EmailAddress" class="form-control" />
+            </div>
+            <ValidationMessage For="@(() => _settings.EmailAddress)" />
+
+            <div class="input-group mt-2">
+                <div class="input-group-prepend">
+                    <label class="input-group-text">Google ReCaptcha Key</label>
+                </div>
+                <InputText id="ReCaptchaKey" @bind-Value="_settings.ReCaptchaKey" class="form-control" type="@_recaptchaKeyFieldType" />
+                <div class="input-group-append">
+                    <div class="input-group-text">
+                        <label class="switch">
+                            @if (_recaptchaFieldChecked == true)
+                            {
+                                <input type="checkbox" @onchange="@ReCaptchaKeyCheckChanged" checked="checked" />
+                            }
+                            else
+                            {
+                                <input type="checkbox" @onchange="@ReCaptchaKeyCheckChanged" />
+                            }
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <ValidationMessage For="@(() => _settings.ReCaptchaKey)" />
+
+            <div class="input-group mt-2">
+                <div class="input-group-prepend">
+                    <label class="input-group-text">Google ReCaptcha Secret Key</label>
+                </div>
+                <InputText id="SendGridKey" @bind-Value="_settings.ReCaptchaSecretKey" class="form-control" type="@_recaptchaSecretKeyFieldType" />
+                <div class="input-group-append">
+                    <div class="input-group-text">
+                        <label class="switch">
+                            @if (_recaptchaSecretFieldChecked == true)
+                            {
+                                <input type="checkbox" @onchange="@ReCaptchaSecretKeyCheckChanged" checked="checked" />
+                            }
+                            else
+                            {
+                                <input type="checkbox" @onchange="@ReCaptchaSecretKeyCheckChanged" />
+                            }
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <ValidationMessage For="@(() => _settings.ReCaptchaSecretKey)" />
+
             <SubmitButton Status="@_submitButtonModel.Status"></SubmitButton>
         </EditForm>
         <Alert Message="@_alertModel.Message" Status="@_alertModel.Status" ResultClass="@AlertState.ResultClass" ResultSpan="@AlertState.ResultSpan" ShowOnSuccess="false"></Alert>
@@ -136,10 +213,16 @@ else
     private SettingsModel _settings = new SettingsModel();
     private AlertModel _alertModel = new AlertModel();
     private SubmitButtonModel _submitButtonModel = new SubmitButtonModel();
+    private string _sendGridFieldType = "Password";
+    private string _recaptchaKeyFieldType = "Password";
+    private string _recaptchaSecretKeyFieldType = "Password";
+    private bool _sendGridFieldChecked = true;
+    private bool _recaptchaFieldChecked = true;
+    private bool _recaptchaSecretFieldChecked = true;
 
     protected override async Task OnInitializedAsync()
     {
-        _settings = await http.GetFromJsonAsync<SettingsModel>("api/settings");
+        _settings = await http.GetFromJsonAsync<SettingsModel>("api/allsettings");
 
         AlertState.RenderAlert += StateHasChanged;
     }
@@ -149,7 +232,7 @@ else
         AlertState.RenderAlert -= StateHasChanged;
     }
 
-    public async void UpdateDetails()
+    private async void UpdateDetails()
     {
         _submitButtonModel.Status = "Processing";
         StateHasChanged();
@@ -161,5 +244,47 @@ else
         AlertState.RenderAlertStyles(_alertModel.Status);
         _submitButtonModel.Status = _alertModel.Status;
         StateHasChanged();
+    }
+
+    private void SendGridCheckChanged()
+    {
+        if (_sendGridFieldChecked)
+        {
+            _sendGridFieldType = "Text";
+            _sendGridFieldChecked = false;
+        }
+        else
+        {
+            _sendGridFieldType = "Password";
+            _sendGridFieldChecked = true;
+        }
+    }
+
+    private void ReCaptchaKeyCheckChanged()
+    {
+        if (_recaptchaFieldChecked)
+        {
+            _recaptchaKeyFieldType = "Text";
+            _recaptchaFieldChecked = false;
+        }
+        else
+        {
+            _recaptchaKeyFieldType = "Password";
+            _recaptchaFieldChecked = true;
+        }
+    }
+
+    private void ReCaptchaSecretKeyCheckChanged()
+    {
+        if (_recaptchaSecretFieldChecked)
+        {
+            _recaptchaSecretKeyFieldType = "Text";
+            _recaptchaSecretFieldChecked = false;
+        }
+        else
+        {
+            _recaptchaSecretKeyFieldType = "Password";
+            _recaptchaSecretFieldChecked = true;
+        }
     }
 }

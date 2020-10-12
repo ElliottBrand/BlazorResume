@@ -20,5 +20,6 @@ namespace BlazorResume.Server.Data
         public DbSet<HireinatorModel> Hireinator { get; set; }
         public DbSet<SettingsModel> Settings { get; set; }
         public DbSet<AboutModel> About { get; set; }
+        public DbSet<ContactModel> Contact { get; set; }
     }
 }

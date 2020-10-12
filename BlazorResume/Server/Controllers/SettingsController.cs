@@ -23,6 +23,35 @@ namespace BlazorResume.Server.Controllers
         [Route("api/settings")]
         public async Task<SettingsModel> Get()
         {
+            var allSettings = await _manageSettings.GetSettingsAsync();
+
+            // Only sending limited settings, so more sensitive Keys aren't revealed.
+            // May end up moving those to a ConfigurationModel later.
+            var limitedSettings = new SettingsModel()
+            {
+                MainThemeColor = allSettings.MainThemeColor,
+                ShowNotice = allSettings.ShowNotice,
+                NoticeText = allSettings.NoticeText,
+                EnableNoticeMarquee = allSettings.EnableNoticeMarquee,
+                ShowPhone = allSettings.ShowPhone,
+                PhoneNumber = allSettings.PhoneNumber,
+                Facebook = allSettings.Facebook,
+                LinkedIn = allSettings.LinkedIn,
+                Twitter = allSettings.Twitter,
+                GitHub = allSettings.GitHub,
+                Twitch = allSettings.Twitch,
+                YouTube = allSettings.YouTube,
+                GoogleAnalyticsID = allSettings.GoogleAnalyticsID,
+                ReCaptchaKey = allSettings.ReCaptchaKey
+            };
+            return limitedSettings;
+        }
+
+        [HttpGet]
+        [Route("api/allsettings")]
+        [Authorize(Roles = "administrator")]
+        public async Task<SettingsModel> GetAllSettings()
+        {
             return await _manageSettings.GetSettingsAsync();
         }
 
