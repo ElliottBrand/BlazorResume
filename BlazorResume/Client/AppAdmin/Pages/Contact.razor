@@ -4,6 +4,7 @@
 @implements IDisposable
 @inject AlertState AlertState
 @inject HttpClient http
+@inject NavigationManager NavigationManager
 @attribute [Authorize(Roles = "administrator")]
 
 <Title Value="Administration | Contact"></Title>
@@ -79,15 +80,23 @@ else
 
     private async void HandleValidSubmit()
     {
-        _submitButtonModel.Status = "Processing";
-        StateHasChanged();
+        try
+        {
+            _submitButtonModel.Status = "Processing";
+            StateHasChanged();
 
-        var response = await http.PostAsJsonAsync<ContactModel>("api/contact", _contact);
+            var response = await http.PostAsJsonAsync<ContactModel>("api/contact", _contact);
 
-        _alertModel = await AlertHelpers.BuildMessageAsync(response);
+            _alertModel = await AlertHelpers.BuildMessageAsync(response);
 
-        AlertState.RenderAlertStyles(_alertModel.Status);
-        _submitButtonModel.Status = _alertModel.Status;
-        StateHasChanged();
+            AlertState.RenderAlertStyles(_alertModel.Status);
+            _submitButtonModel.Status = _alertModel.Status;
+            StateHasChanged();
+        }
+        catch (AccessTokenNotAvailableException)
+        {
+            NavigationManager.NavigateTo($"authentication/login?returnUrl={Uri.EscapeDataString(NavigationManager.Uri)}");
+        }
+
     }
 }

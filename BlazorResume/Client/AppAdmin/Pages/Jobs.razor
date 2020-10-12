@@ -4,6 +4,7 @@
 @implements IDisposable
 @inject AlertState AlertState
 @inject HttpClient http
+@inject NavigationManager NavigationManager 
 @attribute [Authorize(Roles = "administrator")]
 
 <Title Value="Administration | Jobs"></Title>
@@ -111,42 +112,56 @@ else
 
     private async void HandleValidSubmit()
     {
-        _submitButtonModel.Status = "Processing";
-        StateHasChanged();
-
-        var response = await http.PostAsJsonAsync<JobModel>("api/jobs", _job);
-
-        _alertModel = await AlertHelpers.BuildMessageAsync(response);
-
-        if (_alertModel.Status == "Success")
-            _jobs = await http.GetFromJsonAsync<List<JobModel>>("api/jobs");
-
-        AlertState.RenderAlertStyles(_alertModel.Status);
-        _submitButtonModel.Status = _alertModel.Status;
-
-        if(_alertModel.Status == "Success")
+        try
         {
-            _job.JobTitle = string.Empty;
-            _job.CompanyName = string.Empty;
-            _job.StartDate = DateTime.Now;
-            _job.EndDate = null;
-            _job.Details = string.Empty;
-        }
+            _submitButtonModel.Status = "Processing";
+            StateHasChanged();
 
-        StateHasChanged();
+            var response = await http.PostAsJsonAsync<JobModel>("api/jobs", _job);
+
+            _alertModel = await AlertHelpers.BuildMessageAsync(response);
+
+            if (_alertModel.Status == "Success")
+                _jobs = await http.GetFromJsonAsync<List<JobModel>>("api/jobs");
+
+            AlertState.RenderAlertStyles(_alertModel.Status);
+            _submitButtonModel.Status = _alertModel.Status;
+
+            if (_alertModel.Status == "Success")
+            {
+                _job.JobTitle = string.Empty;
+                _job.CompanyName = string.Empty;
+                _job.StartDate = DateTime.Now;
+                _job.EndDate = null;
+                _job.Details = string.Empty;
+            }
+
+            StateHasChanged();
+        }
+        catch (AccessTokenNotAvailableException)
+        {
+            NavigationManager.NavigateTo($"authentication/login?returnUrl={Uri.EscapeDataString(NavigationManager.Uri)}");
+        }
     }
 
     private async Task DeleteJob(int jobId)
     {
-        var response = await http.PostAsJsonAsync<int>("api/jobs/delete/" + jobId, jobId);
-        Console.WriteLine(response);
-        var updated = await BlazorResume.Shared.Helpers.ResponseMessageHelpers.GetBoolFromHttpResponseMessage(response);
-
-        if (updated == true)
+        try
         {
-            _jobs = await http.GetFromJsonAsync<List<JobModel>>("api/jobs");
+            var response = await http.PostAsJsonAsync<int>("api/jobs/delete/" + jobId, jobId);
+            Console.WriteLine(response);
+            var updated = await BlazorResume.Shared.Helpers.ResponseMessageHelpers.GetBoolFromHttpResponseMessage(response);
 
-            StateHasChanged();
+            if (updated == true)
+            {
+                _jobs = await http.GetFromJsonAsync<List<JobModel>>("api/jobs");
+
+                StateHasChanged();
+            }
+        }
+        catch (AccessTokenNotAvailableException)
+        {
+            NavigationManager.NavigateTo($"authentication/login?returnUrl={Uri.EscapeDataString(NavigationManager.Uri)}");
         }
     }
 }

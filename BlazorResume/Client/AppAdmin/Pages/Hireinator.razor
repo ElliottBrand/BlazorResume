@@ -5,6 +5,7 @@
 @implements IDisposable
 @inject AlertState AlertState
 @inject HttpClient http
+@inject NavigationManager NavigationManager
 
 <Title Value="Administration | Hire-inator"></Title>
 
@@ -91,15 +92,22 @@ else
 
     private async void UpdateDetails()
     {
-        _submitButtonModel.Status = "Processing";
-        StateHasChanged();
+        try
+        {
+            _submitButtonModel.Status = "Processing";
+            StateHasChanged();
 
-        var response = await http.PostAsJsonAsync<HireinatorModel>("api/hireinator", _hireinator);
+            var response = await http.PostAsJsonAsync<HireinatorModel>("api/hireinator", _hireinator);
 
-        _alertModel = await AlertHelpers.BuildMessageAsync(response);
+            _alertModel = await AlertHelpers.BuildMessageAsync(response);
 
-        AlertState.RenderAlertStyles(_alertModel.Status);
-        _submitButtonModel.Status = _alertModel.Status;
-        StateHasChanged();
+            AlertState.RenderAlertStyles(_alertModel.Status);
+            _submitButtonModel.Status = _alertModel.Status;
+            StateHasChanged();
+        }
+        catch(AccessTokenNotAvailableException)
+        {
+            NavigationManager.NavigateTo($"authentication/login?returnUrl={Uri.EscapeDataString(NavigationManager.Uri)}");
+        }
     }
     }
