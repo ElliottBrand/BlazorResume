@@ -15,7 +15,7 @@ else
             <h1>@_resume.FullName</h1>
             <h3>@_resume.JobTitle</h3>
         </header>
-        <section class="container">@_resume.Overview</section>
+        <section class="container">@(new MarkupString(_resume.Overview))</section>
         <Hireinator></Hireinator>
         <section class="pb-4">
             @if (_resume.Jobs.Count == 0)
@@ -44,6 +44,8 @@ else
 
         var http = httpClientFactory.CreateClient("BlazorResume.AnonymousAPI");
         _resume = await http.GetFromJsonAsync<ResumeModel>("api/resume");
+
+        _resume.Overview = HTMLHelpers.ConvertNewLinesToBR(_resume.Overview);
 
     }
 

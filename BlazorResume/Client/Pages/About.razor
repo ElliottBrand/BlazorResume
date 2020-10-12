@@ -13,7 +13,7 @@ else
 
     <div class="container pb-4">
         <h2>@_about.Title</h2>
-        @_about.Details
+        @(new MarkupString(_about.Details))
     </div>
 }
 
@@ -24,5 +24,7 @@ else
     {
         var http = httpClientFactory.CreateClient("BlazorResume.AnonymousAPI");
         _about = await http.GetFromJsonAsync<AboutModel>("api/about");
+
+        _about.Details = HTMLHelpers.ConvertNewLinesToBR(_about.Details);
     }
 }
