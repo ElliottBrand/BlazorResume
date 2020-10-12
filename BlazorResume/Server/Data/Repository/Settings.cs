@@ -27,6 +27,7 @@ namespace BlazorResume.Server.Data.Repository
                 PhoneNumber = settings.PhoneNumber,
                 ShowPhone = settings.ShowPhone,
                 NoticeText = settings.NoticeText,
+                ShowNotice = settings.ShowNotice,
                 EnableNoticeMarquee = settings.EnableNoticeMarquee,
                 MainThemeColor = settings.MainThemeColor,
                 LinkedIn = settings.LinkedIn,
