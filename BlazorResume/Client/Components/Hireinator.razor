@@ -54,7 +54,8 @@ else
 
     string FormatSelectedSalary(double selectedSalary)
     {
-        return String.Format("{0:c}", selectedSalary);
+        System.Globalization.CultureInfo us = System.Globalization.CultureInfo.GetCultureInfo("en-US");
+        return String.Format(us, "{0:c}", selectedSalary);
     }
 
     string ShowResponse(double selectedSalary)

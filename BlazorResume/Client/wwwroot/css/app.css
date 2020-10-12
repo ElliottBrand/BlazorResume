@@ -110,8 +110,11 @@ footer {
             text-overflow: ellipsis;
         }
 
-.navbar-toggler-icon {
+.navbar-dark .navbar-toggler {
     color: #fff;
+    border-color: rgba(255, 255, 255, .3);
+    border-width: 2px;
+    padding-bottom: 8px;
 }
 
 #navbar-toggler-panel {

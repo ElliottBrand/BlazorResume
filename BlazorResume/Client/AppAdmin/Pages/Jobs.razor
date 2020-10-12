@@ -124,6 +124,15 @@ else
         AlertState.RenderAlertStyles(_alertModel.Status);
         _submitButtonModel.Status = _alertModel.Status;
 
+        if(_alertModel.Status == "Success")
+        {
+            _job.JobTitle = string.Empty;
+            _job.CompanyName = string.Empty;
+            _job.StartDate = DateTime.Now;
+            _job.EndDate = null;
+            _job.Details = string.Empty;
+        }
+
         StateHasChanged();
     }
 
