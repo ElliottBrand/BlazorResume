@@ -1,7 +1,7 @@
 ﻿@inject IJSRuntime JSRuntime
 @inject IHttpClientFactory httpClientFactory
 
-<section class="contact-form-section mt-4">
+<section class="contact-form-section mt-4 container">
     <EditForm Model="_contactFormModel" OnValidSubmit="HandleValidSubmit">
         <DataAnnotationsValidator />
 
@@ -46,9 +46,14 @@
             <span>Sorry, there was a problem sending your message.</span>
         </div>
     }
-
 </section>
-
+<div class="grecaptcha-notice-div">
+    <div class="container">
+        This site is protected by reCAPTCHA and the Google
+        <a href="https://policies.google.com/privacy" target="_blank">Privacy Policy</a> and
+        <a href="https://policies.google.com/terms" target="_blank">Terms of Service</a> apply.
+    </div>
+</div>
 
 @code {
     private ContactFormModel _contactFormModel = new ContactFormModel();

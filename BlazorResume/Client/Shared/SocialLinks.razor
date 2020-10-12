@@ -53,10 +53,18 @@
     [Parameter] public int IconWidth { get; set; } = 20;
     [Parameter] public string UniformHexColor { get; set; }
     string displayClass;
+    bool secondRender = true;
 
-    protected override void OnInitialized()
+    protected override void OnAfterRender(bool firstRender)
     {
-        if (string.IsNullOrEmpty(LinkedInURL + TwitterURL + FacebookURL + GitHubURL + TwitchURL + YouTubeURL))
-            displayClass = "d-none";
+
+        if (!firstRender && secondRender == true)
+        {
+            if (string.IsNullOrEmpty(LinkedInURL + TwitterURL + FacebookURL + GitHubURL + TwitchURL + YouTubeURL))
+            {
+                displayClass = "d-none";
+            }
+            secondRender = false;
+        }
     }
 }

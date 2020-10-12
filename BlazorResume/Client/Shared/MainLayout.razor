@@ -29,7 +29,7 @@
         Proudly built in <a href="https://blazor.net" target="_blank"><BlazorIcon Width="30" Height="30" HexColor="#59B4E2"></BlazorIcon>Blazor</a>
     </footer>
     
-    @if (hostEnvironment.Environment == "Production" && !String.IsNullOrEmpty(_settings.GoogleAnalyticsID))
+    @if (hostEnvironment.Environment == "Production")
     {
         <GoogleAnalytics GoogleAnalyticsID="@_settings.GoogleAnalyticsID"></GoogleAnalytics>
     }
@@ -43,5 +43,6 @@
     {
         var http = httpClientFactory.CreateClient("BlazorResume.AnonymousAPI");
         _settings = await http.GetFromJsonAsync<SettingsModel>("api/settings");
+        Console.WriteLine(_settings.GoogleAnalyticsID + " " + _settings.LinkedIn);
     }
 }

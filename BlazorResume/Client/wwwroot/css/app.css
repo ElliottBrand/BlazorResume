@@ -41,6 +41,23 @@ footer {
         position: relative;
     }
 
+.grecaptcha-badge {
+    visibility: collapse !important;
+}
+
+.grecaptcha-notice-div {
+    background-color: #dbdbdb;
+    color: #989898;
+    font-size: small;
+    padding: 0.5em;
+    margin-top: 4em;
+    text-align: center;
+}
+
+.grecaptcha-notice-div a {
+    color: #757575;
+}
+
 .login-container {
     background-color: #222;
 }
