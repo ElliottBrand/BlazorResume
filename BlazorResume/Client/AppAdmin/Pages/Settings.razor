@@ -5,6 +5,7 @@
 @implements IDisposable
 @inject AlertState AlertState
 @inject HttpClient http
+@inject NavigationManager NavigationManager 
 @attribute [Authorize(Roles = "administrator")]
 
 <Title Value="Administration | Settings"></Title>
@@ -234,16 +235,23 @@ else
 
     private async void UpdateDetails()
     {
-        _submitButtonModel.Status = "Processing";
-        StateHasChanged();
+        try
+        {
+            _submitButtonModel.Status = "Processing";
+            StateHasChanged();
 
-        var response = await http.PostAsJsonAsync<SettingsModel>("api/settings", _settings);
+            var response = await http.PostAsJsonAsync<SettingsModel>("api/settings", _settings);
 
-        _alertModel = await AlertHelpers.BuildMessageAsync(response);
+            _alertModel = await AlertHelpers.BuildMessageAsync(response);
 
-        AlertState.RenderAlertStyles(_alertModel.Status);
-        _submitButtonModel.Status = _alertModel.Status;
-        StateHasChanged();
+            AlertState.RenderAlertStyles(_alertModel.Status);
+            _submitButtonModel.Status = _alertModel.Status;
+            StateHasChanged();
+        }
+        catch (AccessTokenNotAvailableException)
+        {
+            NavigationManager.NavigateTo($"authentication/login?returnUrl={Uri.EscapeDataString(NavigationManager.Uri)}");
+        }
     }
 
     private void SendGridCheckChanged()
