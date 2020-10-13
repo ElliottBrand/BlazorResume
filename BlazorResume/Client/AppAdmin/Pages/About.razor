@@ -50,9 +50,16 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        _about = await http.GetFromJsonAsync<AboutModel>("api/about");
+        try
+        {
+            _about = await http.GetFromJsonAsync<AboutModel>("api/about");
 
-        AlertState.RenderAlert += StateHasChanged;
+            AlertState.RenderAlert += StateHasChanged;
+        }
+        catch (AccessTokenNotAvailableException)
+        {
+            NavigationManager.NavigateTo($"authentication/login?returnUrl={Uri.EscapeDataString(NavigationManager.Uri)}");
+        }
     }
 
     public void Dispose()

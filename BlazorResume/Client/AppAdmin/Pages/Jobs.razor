@@ -99,10 +99,17 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        AlertState.RenderAlert += StateHasChanged;
+        try
+        {
+            AlertState.RenderAlert += StateHasChanged;
 
-        _jobs = await http.GetFromJsonAsync<List<JobModel>>("api/jobs");
-        _job.StartDate = DateTime.Now;
+            _jobs = await http.GetFromJsonAsync<List<JobModel>>("api/jobs");
+            _job.StartDate = DateTime.Now;
+        }
+        catch (AccessTokenNotAvailableException)
+        {
+            NavigationManager.NavigateTo($"authentication/login?returnUrl={Uri.EscapeDataString(NavigationManager.Uri)}");
+        }
     }
 
     public void Dispose()
