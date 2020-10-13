@@ -43,6 +43,5 @@
     {
         var http = httpClientFactory.CreateClient("BlazorResume.AnonymousAPI");
         _settings = await http.GetFromJsonAsync<SettingsModel>("api/settings");
-        Console.WriteLine(_settings.GoogleAnalyticsID + " " + _settings.LinkedIn);
     }
 }

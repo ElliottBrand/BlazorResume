@@ -66,9 +66,16 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        _resume = await http.GetFromJsonAsync<ResumeModel>("api/resume");
+        try
+        {
+            _resume = await http.GetFromJsonAsync<ResumeModel>("api/resume");
 
-        AlertState.RenderAlert += StateHasChanged;
+            AlertState.RenderAlert += StateHasChanged;
+        }
+        catch (AccessTokenNotAvailableException)
+        {
+            NavigationManager.NavigateTo($"authentication/login?returnUrl={Uri.EscapeDataString(NavigationManager.Uri)}");
+        }
     }
 
     public void Dispose()

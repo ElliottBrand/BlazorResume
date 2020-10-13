@@ -80,9 +80,16 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        _hireinator = await http.GetFromJsonAsync<HireinatorModel>("api/hireinator");
+        try
+        {
+            _hireinator = await http.GetFromJsonAsync<HireinatorModel>("api/hireinator");
 
-        AlertState.RenderAlert += StateHasChanged;
+            AlertState.RenderAlert += StateHasChanged;
+        }
+        catch (AccessTokenNotAvailableException)
+        {
+            NavigationManager.NavigateTo($"authentication/login?returnUrl={Uri.EscapeDataString(NavigationManager.Uri)}");
+        }
     }
 
     public void Dispose()
