@@ -1,4 +1,13 @@
-﻿<!DOCTYPE html>
+﻿@page "/"
+@namespace BlazorForum.Pages
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+@{
+    Layout = null;
+}
+
+
+<!DOCTYPE html>
 <html>
 
 <head>
@@ -8,11 +17,15 @@
     <base href="/" />
     <link href="css/bootstrap/bootstrap.min.css" rel="stylesheet" />
     <link href="css/app.css" rel="stylesheet" />
-    <link href="_framework/scoped.styles.css" rel="stylesheet" />
+    <link href="BlazorResume.Client.styles.css" rel="stylesheet" />
 </head>
 
 <body>
-    <div id="app">Loading...</div>
+    <div id="app">
+        <div class="text-center p-4">
+            <span class="oi oi-cog spin-icon"></span> Loading...
+        </div>
+    </div>
 
     <div id="blazor-error-ui">
         An unhandled error has occurred.
